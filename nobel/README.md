@@ -42,5 +42,20 @@ A pattern appears: Looks like I'm likely to have read authors who won the Nobel 
 | Heard of vs unknown |     -0.08 |
 
 
-Fat load o' nothing.
+Fat load o' nothing, as expected. Let's bin them by decade and draw a histogram:
 
+![Histogram: Literature Nobel winners unknown to me vs heard of vs read, by decade](./nobel_histogram.png)
+
+Yep, definitely a bump in read authors near 1950, and a corresponding through in unknown authors. This could be a real effect: Maybe the lack of Nobels during World War 2 means harsher selection for famous authors afterwards. Maybe I'm a 1950s kid. Or could it all be… a coincidence? Dun dun dun.
+
+### Some Russian guys to the rescue
+
+Are Nobel years for authors I read, and those for authors I don't know, drawn from the same random distribution, with this small cluster popping up by sheer chance? Or are those I've read genuinely more concentrated around 1950? The [Kolmogorov-Smirnov test](https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test) measures exactly that.
+
+![Cumulative distribution functions of unknown vs read Nobel years](./nobel_ks.png)
+
+The Kolmogorov-Smirnov statistic for Nobel prize authors is **0.21**. …um, okay? Is that a lot or not?
+
+Well, how likely is that to happen if the two distributions are the same? I could compute it, but computations are for computers.
+
+TODO: Monte Carlo go brrr
