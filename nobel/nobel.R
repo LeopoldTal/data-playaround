@@ -16,7 +16,7 @@ pooled_sd <- function(treatment, control) {
 	pooled_var <- (nt*vt + nc*vc) / (nt + nc)
 	sqrt(pooled_var)
 }
-cohen.d <- function(treatment, control) {
+cohen_d <- function(treatment, control) {
 	effect <- mean(treatment) - mean(control)
 	effect / pooled_sd(treatment, control)
 }
@@ -25,24 +25,27 @@ cohen.d <- function(treatment, control) {
 nobel$known <- nobel$heardOf | nobel$read
 ggplot(nobel, aes(x = factor(known), y = year, color = factor(known))) +
 	geom_point(position = position_jitter(width = 0.05, height = 0)) +
-	ylim(1900, 2022) + # FIXME: limits
+	scale_y_continuous(limits = c(min(nobel$year), max(nobel$year)), expand = expansion(add = 2)) +
+	scale_colour_brewer(palette = 'Set1') +
 	labs(title = 'Literature Nobel Prize winners') +
 	scale_x_discrete('Have I heard of/read them?', labels = c('Unknown', 'Known')) + 
 	ylab('Year prize received') +
 	theme(legend.position = 'none', plot.title = element_text(hjust = 0.5))
 known_years <- subset(nobel, nobel$known == TRUE)$year
 unknown_years <- subset(nobel, nobel$known == FALSE)$year
-cohen.d(known_years, unknown_years)
+cohen_d(known_years, unknown_years)
 
 # Ternary classification
-# FIXME: can I name the factors something nicer and still preserve the order?
 nobel$group <- ifelse(
 	nobel$read,
-	'2-Read',
-	ifelse(nobel$heardOf, '1-Heard of', '0-Unknown')
+	'Read',
+	ifelse(nobel$heardOf, 'Heard of', 'Unknown')
 	)
-ggplot(nobel, aes(x = factor(group), y = year, color = factor(group))) +
+group_factor <- factor(nobel$group, ordered = TRUE, levels = c('Unknown', 'Heard of', 'Read'))
+ggplot(nobel, aes(x = group_factor, y = year, color = group_factor)) +
 	geom_point(position = position_jitter(width = 0.05, height = 0)) +
+	scale_y_continuous(limits = c(min(nobel$year), max(nobel$year)), expand = expansion(add = 2)) +
+	scale_colour_brewer(palette = 'Set1') +
 	labs(title = 'Literature Nobel Prize winners') +
 	xlab('Have I heard of/read them?') + 
 	ylab('Year prize received') +
@@ -50,6 +53,6 @@ ggplot(nobel, aes(x = factor(group), y = year, color = factor(group))) +
 unknown_years <- subset(nobel, nobel$group == '0-Unknown')$year
 heard_of_years <- subset(nobel, nobel$group == '1-Heard of')$year
 read_years <- subset(nobel, nobel$group == '2-Read')$year
-cohen.d(read_years, unknown_years)
-cohen.d(read_years, heard_of_years)
-cohen.d(heard_of_years, unknown_years)
+cohen_d(read_years, unknown_years)
+cohen_d(read_years, heard_of_years)
+cohen_d(heard_of_years, unknown_years)
