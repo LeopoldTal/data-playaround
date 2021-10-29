@@ -58,4 +58,27 @@ The Kolmogorov-Smirnov statistic for Nobel prize authors is **0.21**. …um, oka
 
 Well, how likely is that to happen if the two distributions are the same? I could compute it, but computations are for computers.
 
-TODO: Monte Carlo go brrr
+### Monte Carlo
+
+Plan:
+
+* Choose a distribution that will model the distribution of Nobel years.
+* Generate two samples from this distribution: one with 30 points, modelling read authors; and one with 71, modelling unknown authors.
+* Compute the Kolmogorov-Smirnov statistic for these samples.
+* Repeat a bunch of times, and measure the probability of getting at least 0.21.
+
+This measures the (un)likelihood that our actual 1950s-Nobel bump is due to chance.
+
+There are a few different ways to model the distribution:
+
+* Uniform: Pick integer years in {1901…2021}.
+* Uniform over Nobel years: Pick integer years in {1901…2021}, but exclude years with no laureate, and double-count years with two laureates.
+* Partition: Get all the Nobel years, and randomly assign them to read vs unknown.
+
+![Model-generated distributions of Kolmogorov-Smirnov statistic](./nobel_monte_carlo.png)
+
+With all 3 models, the probability of randomly generating samples with a Kolmogorov-Smirnov statistic at least equal to that of the real data (0.21) is large: 22% for the first two models, and 25% for the partition model. So it's likely that the apparent pattern in the real Nobel data is just coincidence.
+
+## Conclusion
+
+Nope, nothing interesting here.

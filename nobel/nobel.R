@@ -78,9 +78,66 @@ ggplot(nobel, aes(x = year, fill = group_factor)) +
 	ylab('Number of prize winners') +
 	common_theme
 
+# Kolmogorov-Smirnov
 source('./nobel/ks.R')
 
+measured_nobel_ks <- ks(read_years, unknown_years)
 plot_ks(
 	read_years, unknown_years,
 	values_label = 'Nobel year', treatment_label = 'Read', control_label = 'Unknown'
 )
+
+# Monte Carlo
+n_read <- length(read_years)
+n_unknown <- length(unknown_years)
+
+min_year <- min(nobel$year)
+max_year <- max(nobel$year)
+dist_years_uniform <- function() {
+	list(
+		treatment = sample(min_year : max_year, n_read, replace = TRUE),
+		control = sample(min_year : max_year, n_unknown, replace = TRUE)
+	)
+}
+
+dist_years_nobel <- function() {
+	list(
+		treatment = sample(nobel$year, n_read, replace = TRUE),
+		control = sample(nobel$year, n_unknown, replace = TRUE)
+	)
+}
+
+dist_years_partition <- function() {
+	selected <- sample(nobel$year, n_read + n_unknown)
+	list(
+		treatment = selected[1 : n_read],
+		control = selected[(n_read + 1) : (n_read + n_unknown)]
+	)
+}
+
+model_dists <- c(
+	'Uniform' = dist_years_uniform,
+	'Random Nobel years' = dist_years_nobel,
+	'Partition on Nobel years' = dist_years_partition
+)
+
+
+mcks <- multi_monte_carlo_ks(model_dists, 10000)
+model_factor <- factor(mcks$model)
+ggplot(mcks, aes(x = ks, y= ..count.. / sum(..count..), fill = model_factor)) +
+	geom_histogram(color = 'black') +
+	facet_wrap(model_factor, dir = 'v') +
+	geom_vline(aes(xintercept = measured_nobel_ks), color = 'black') +
+	labs(title = 'Kolmogorov-Smirnov statistic distribution') +
+	xlab('Kolmogorov-Smirnov value') +
+	ylab('Probability') +
+	scale_fill_brewer(palette = palette_name) +
+	common_theme
+
+# Probability of actual data
+print(paste('Probability of randomly generating Kolmogorov-Smirnov statistic >=', measured_nobel_ks))
+for (name in names(model_dists)) {
+	samples <- subset(mcks, model == name)$ks
+	p <- sum(samples >= measured_nobel_ks) / length(samples)
+	print(c(name, p))
+}

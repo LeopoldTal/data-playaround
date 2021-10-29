@@ -80,3 +80,23 @@ optimised_ks <- function(treatment, control) {
 	}
 	max_gap
 }
+
+monte_carlo_ks <- function(model_dist, nb_runs = 1000) {
+	single_run <- function(run_index) {
+		samples <- model_dist()
+		ks(samples$treatment, samples$control)
+	}
+	sapply(1 : nb_runs, single_run)
+}
+
+multi_monte_carlo_ks <- function(model_dists, nb_runs = 1000) {
+	all_runs <- data.frame()
+
+	for (name in names(model_dists)) {
+		runs <- monte_carlo_ks(model_dist = model_dists[[name]], nb_runs = nb_runs)
+		runs_frame <- data.frame(ks = runs, model = name)
+		all_runs <- rbind(all_runs, runs_frame)
+	}
+
+	all_runs
+}
