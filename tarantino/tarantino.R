@@ -65,10 +65,13 @@ ggplot(swears, aes(x = rank, y = count, fill = rank)) +
 		panel.grid.major.x = element_blank(),
 	)
 
-# Fit Zipf
+# More stats
 swears$rel_freq <- swears$count / sum(swears$count)
+non_unique_swears <- subset(swears, count > 1)
+
+# Fit Zipf
 ggplot(swears, aes(x = log10(rank), y = log10(rel_freq), color = rank)) +
-	geom_smooth(method = 'lm') +
+	geom_smooth(method = 'lm', data = non_unique_swears) +
 	geom_point() +
 	scale_color_viridis_c(option = 'plasma') +
 	scale_x_continuous( 
@@ -89,8 +92,8 @@ ggplot(swears, aes(x = log10(rank), y = log10(rel_freq), color = rank)) +
 yule <- function(index, param) { param * beta(index, param + 1) }
 
 get_yule_square_error <- function(param) {
-	actual <- log10(swears$rel_freq)
-	expected <- log10(yule(swears$rank, param))
+	actual <- log10(non_unique_swears$rel_freq)
+	expected <- log10(yule(non_unique_swears$rank, param))
 	errors <- (actual - expected)**2
 	sum(errors)
 }
@@ -120,3 +123,23 @@ ggplot(swears) +
 	theme(
 		axis.title.y = element_text(angle = 0, margin = margin(r = -3.5, unit = 'cm')),
 	)
+
+# idk just try weird transforms
+ggplot(swears, aes(x = rank, y = log10(rel_freq)**2, color = rank)) +
+	geom_smooth(method = 'lm', data = non_unique_swears) +
+	geom_point() +
+	scale_color_viridis_c(option = 'plasma') +
+	scale_x_continuous(
+		expand = expansion(add = c(1, 1))
+	) +
+	scale_y_continuous(
+		expand = expansion(mult = c(0.01, 0.05))
+	) +
+	labs(title = 'Overall distribution of Tarantinian swears') +
+	xlab('Swear rank') +
+	ylab('log10(relative frequency)^2') +
+	bw_theme +
+	theme(
+		axis.title.y = element_text(angle = 0, margin = margin(r = -4.5, unit = 'cm')),
+	)
+
