@@ -19,6 +19,7 @@ swears <- subset(tarantino, type == 'word') %>%
 	arrange(desc(count))
 swears$rank <- 1 : nrow(swears)
 
+# Most-used swears
 nb_top_swears <- 6
 top_swears <- slice_max(swears, swears$count, n = nb_top_swears)
 other_count <- filter(swears, !(word %in% top_swears$word))$count %>% sum
@@ -45,6 +46,7 @@ ggplot(top_swears, aes(x = 'Swear', y = percentage, fill = factor(rank))) +
 		axis.text.x = element_blank()
 	)
 
+# Distribution (lin scale)
 ggplot(swears, aes(x = rank, y = count, fill = rank)) +
 	geom_col(width = 1) +
 	scale_fill_viridis_c(option = 'plasma') +
@@ -63,7 +65,9 @@ ggplot(swears, aes(x = rank, y = count, fill = rank)) +
 		panel.grid.major.x = element_blank(),
 	)
 
-ggplot(swears, aes(x = log10(rank), y = log10(count), color = rank)) +
+# Fit Zipf
+swears$rel_freq <- swears$count / sum(swears$count)
+ggplot(swears, aes(x = log10(rank), y = log10(rel_freq), color = rank)) +
 	geom_smooth(method = 'lm') +
 	geom_point() +
 	scale_color_viridis_c(option = 'plasma') +
@@ -75,7 +79,43 @@ ggplot(swears, aes(x = log10(rank), y = log10(count), color = rank)) +
 	) +
 	labs(title = 'Overall distribution of Tarantinian swears') +
 	xlab('Swear rank (log)') +
-	ylab('Total occurrences (log)') +
+	ylab('Relative frequency (log)') +
+	bw_theme +
+	theme(
+		axis.title.y = element_text(angle = 0, margin = margin(r = -3.5, unit = 'cm')),
+	)
+
+# Fit Yule-Simon
+yule <- function(index, param) { param * beta(index, param + 1) }
+
+get_yule_square_error <- function(param) {
+	actual <- log10(swears$rel_freq)
+	expected <- log10(yule(swears$rank, param))
+	errors <- (actual - expected)**2
+	sum(errors)
+}
+params_to_try <- seq(0.001, 5, 0.001)
+best_param <- params_to_try[which.min(sapply(params_to_try, get_yule_square_error))]
+
+ggplot(swears) +
+	geom_point(aes(x = log10(rank), y = log10(rel_freq), color = rank)) +
+	scale_color_viridis_c(option = 'plasma') +
+	geom_line(aes(x = log10(rank), y = log10(yule(rank, best_param))), color = 'darkgreen') +
+	scale_x_continuous( 
+		expand = expansion(mult = c(0.01, 0.05))
+	) +
+	scale_y_continuous(
+		expand = expansion(mult = c(0.01, 0.1))
+	) +
+	geom_text(aes(
+		label = paste('Yule-Simon best fit ρ =', best_param),
+		x = 0.1,
+		y = log10(yule(1, best_param)),
+		hjust = 0
+	), color = 'darkgreen') +
+	labs(title = 'Overall distribution of Tarantinian swears') +
+	xlab('Swear rank (log)') +
+	ylab('Relative frequency (log)') +
 	bw_theme +
 	theme(
 		axis.title.y = element_text(angle = 0, margin = margin(r = -3.5, unit = 'cm')),

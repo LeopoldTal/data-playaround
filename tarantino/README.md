@@ -26,4 +26,8 @@ Swear frequency in the Tarantino corpus drops off fast as rank increases, sugges
 
 The fit is very poor: the top swears are much less frequent than Zipf's law would predict.
 
-TODO: fit Yule-Simon
+Minimising the square error (in log space) between a Yule-Simon distribution and the actual swear distribution finds a best fit parameter ρ = 0.820.
+
+![Distribution of all swears and Yule-Simon fit](log_yule.png)
+
+However, the fit is still poor. This shows that Tarentinian swears are not distributed like overall words.
