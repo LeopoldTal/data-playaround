@@ -99,12 +99,12 @@ get_yule_square_error <- function(param) {
 	sum(errors)
 }
 params_to_try <- seq(0.001, 5, 0.001)
-best_param <- params_to_try[which.min(sapply(params_to_try, get_yule_square_error))]
+best_param_yule <- params_to_try[which.min(sapply(params_to_try, get_yule_square_error))]
 
 ggplot(swears) +
 	geom_point(aes(x = log10(rank), y = log10(rel_freq), color = rank)) +
 	scale_color_viridis_c(option = 'plasma') +
-	geom_line(aes(x = log10(rank), y = log10(yule(rank, best_param))), color = 'darkgreen') +
+	geom_line(aes(x = log10(rank), y = log10(yule(rank, best_param_yule))), color = 'darkgreen') +
 	scale_x_continuous(
 		expand = expansion(mult = c(0.01, 0.05))
 	) +
@@ -112,9 +112,9 @@ ggplot(swears) +
 		expand = expansion(mult = c(0.01, 0.1))
 	) +
 	geom_text(aes(
-		label = paste('Yule-Simon best fit ρ =', best_param),
+		label = paste('Yule-Simon best fit ρ =', best_param_yule),
 		x = 0.1,
-		y = log10(yule(1, best_param)),
+		y = log10(yule(1, best_param_yule)),
 		hjust = 0
 	), color = 'darkgreen') +
 	labs(title = 'Overall distribution of Tarantinian swears') +
@@ -153,9 +153,9 @@ get_zm_square_error <- function(param) {
 }
 
 params_to_try <- seq(0, 50, 0.01)
-best_param <- params_to_try[which.min(sapply(params_to_try, get_zm_square_error))]
+best_param_zm <- params_to_try[which.min(sapply(params_to_try, get_zm_square_error))]
 
-ggplot(swears, aes(x = log10(rank + best_param), y = log10(rel_freq), color = rank)) +
+ggplot(swears, aes(x = log10(rank + best_param_zm), y = log10(rel_freq), color = rank)) +
 	geom_smooth(method = 'lm', data = non_unique_swears) +
 	geom_point() +
 	scale_color_viridis_c(option = 'plasma') +
@@ -166,15 +166,15 @@ ggplot(swears, aes(x = log10(rank + best_param), y = log10(rel_freq), color = ra
 		expand = expansion(mult = c(0.01, 0.1))
 	) +
 	labs(title = 'Overall distribution of Tarantinian swears\nZipf-Mandelbrot fit') +
-	xlab(paste('log10(swear rank + ', best_param, ')', sep = '')) +
+	xlab(paste('log10(swear rank + ', best_param_zm, ')', sep = '')) +
 	ylab('log10(relative frequency)') +
 	bw_theme +
 	theme(
 		axis.title.y = element_text(angle = 0, margin = margin(r = -4, unit = 'cm')),
 	)
 
-zm_fit <- lm(log10(non_unique_swears$rel_freq) ~ log10(non_unique_swears$rank + best_param))
-zm_expected_freq <- log10(swears$rank + best_param)*zm_fit$coefficients[2] + zm_fit$coefficients[1]
+zm_fit <- lm(log10(non_unique_swears$rel_freq) ~ log10(non_unique_swears$rank + best_param_zm))
+zm_expected_freq <- log10(swears$rank + best_param_zm)*zm_fit$coefficients[2] + zm_fit$coefficients[1]
 ggplot(swears) +
 	geom_point(aes(x = log10(rank), y = log10(rel_freq), color = rank)) +
 	scale_color_viridis_c(option = 'plasma') +
@@ -192,3 +192,5 @@ ggplot(swears) +
 	theme(
 		axis.title.y = element_text(angle = 0, margin = margin(r = -3.5, unit = 'cm')),
 	)
+
+source('./tarantino/fit_by_movie.R', echo = TRUE)

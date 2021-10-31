@@ -46,10 +46,26 @@ The [Zipf-Mandelbrot](https://en.wikipedia.org/wiki/Zipf%E2%80%93Mandelbrot_law)
 frequency ∝ (rank + 7.97)^-3.63
 ```
 
-![Distribution of all swears and Zipf_Mandelbrot fit](zm_transform.png) ![Same in log scale](zm_log.png)
+![Distribution of all swears and Zipf-Mandelbrot fit](zm_transform.png) ![Same in log scale](zm_log.png)
 
 A pretty good fit! But there are 3 free parameters, and still some systematic deviation at low rank, so I suspect overfitting.
 
 After trying to fit any random relations I can come up with, it turns out that the rank is proportional to the square log of the frequency. What could produce this? Search me.
 
 ![Swear rank vs square log of relative frequency](custom_fit.png)
+
+### Distribution within each movie
+
+Do these laws actually model the distribution well, or are they pure overfitting? We can validate them against the distribution of swears in each movie.
+
+![Distribution of swears within each movie](distrib_by_movie.png)
+
+Swears in each movie follow a similar distribution law, except for _Reservoir Dogs_, where the distribution is much flatter, with 5 different swears used 12 or 13 times. Moreover, the _Kill Bill_ movies have far fewer swears, and so provide little data on the bottom ranks.
+
+![Distribution of swears by movie and Zipf-Mandelbrot fit](zm_transform.png) ![Same in log scale](zm_log.png)
+
+Distributions for individual movies agree reasonably well with the Zipf-Mandelbrot distribution fit on the overall data, though they tend to fall off slightly faster than predicted.
+
+![Swear rank vs square log of relative frequency, by movie](custom_fit_by_movie.png)
+
+Likewise, the square log of the frequency predicts the actual distribution fairly well, but underestimates fall-off speed.
