@@ -57,7 +57,7 @@ word_factor = factor(
 
 ggplot(binned_by_movie, aes(x = movie_factor, y = count, fill = word_factor)) +
 	geom_col() +
-	scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
+	scale_y_continuous(expand = expansion(mult = c(0, 0.17))) +
 	scale_fill_brewer(palette = 'Set2', name = 'Swear') +
 	labs(title = 'Most-used Tarantinian swears by movie') +
 	ylab('Total occurrences') +
@@ -66,7 +66,9 @@ ggplot(binned_by_movie, aes(x = movie_factor, y = count, fill = word_factor)) +
 		axis.title.y = element_text(angle = 0, margin = margin(r = -3, unit = 'cm')),
 		axis.title.x = element_blank(),
 		axis.text.x = element_text(angle = -70, size = 9, hjust = 0),
-		legend.position = 'right',
+		plot.title = element_text(margin = margin(b = .3, unit = 'cm')),
+		panel.grid.major.x = element_blank(),
+		legend.position = 'right'
 	)
 
 # Distribution by movie
