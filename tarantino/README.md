@@ -10,7 +10,7 @@ The tally lists **1704 total swears** and **60 unique swears**.
 
 ![Most frequent swears](top_swears.png)
 
-A few of them appear many times: _fucking_ has a comfortable lead with 207 occurrences, nearly a quarter of all swears. It is followed by _shit_ and _fuck_, both used a little over 200 times. Mr. Tarantino's reputation for loving the N-word is borne out by the data: it ranks fourth, with 179 occurrences.
+A few of them appear many times: _fucking_ has a comfortable lead with 407 occurrences, nearly a quarter of all swears. It is followed by _shit_ and _fuck_, both used a little over 200 times. Mr. Tarantino's reputation for loving the N-word is borne out by the data: it ranks fourth, with 179 occurrences.
 
 Conversely, 25 swears are said only once, of which my favourite is _cockblockery_, used in _Kill Bill_.
 
