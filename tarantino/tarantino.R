@@ -145,15 +145,25 @@ ggplot(swears, aes(x = rank, y = log10(rel_freq)**2, color = rank)) +
 	)
 
 # Zipf-Mandelbrot
-get_zm_square_error <- function(param) {
-	y <- log10(non_unique_swears$rel_freq)
-	x <- log10(non_unique_swears$rank + param)
-	fit <- lm(y ~ x)
-	sum(fit$residuals**2)
+fit_zm <- function(data) {
+	get_zm_square_error <- function(param) {
+		y <- log10(data$rel_freq)
+		x <- log10(data$rank + param)
+		fit <- lm(y ~ x)
+		sum(fit$residuals**2)
+	}
+
+	params_to_try <- seq(0, 50, 0.01)
+	best_param_zm <- params_to_try[which.min(sapply(params_to_try, get_zm_square_error))]
+
+	best_param_zm
 }
 
-params_to_try <- seq(0, 50, 0.01)
-best_param_zm <- params_to_try[which.min(sapply(params_to_try, get_zm_square_error))]
+best_param_zm <- fit_zm(non_unique_swears)
+
+# Try excluding the #1 swear, see if there's a king effect. Doesn't seem to matter
+#middle_swears <- subset(non_unique_swears, rank != 1)
+#best_param_zm <- fit_zm(middle_swears)
 
 ggplot(swears, aes(x = log10(rank + best_param_zm), y = log10(rel_freq), color = rank)) +
 	geom_smooth(method = 'lm', data = non_unique_swears) +
