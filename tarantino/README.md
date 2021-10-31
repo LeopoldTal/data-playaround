@@ -62,7 +62,7 @@ Do these laws actually model the distribution well, or are they pure overfitting
 
 Swears in each movie follow a similar distribution law, except for _Reservoir Dogs_, where the distribution is much flatter, with 5 different swears used 12 or 13 times. Moreover, the _Kill Bill_ movies have far fewer swears, and so provide little data on the bottom ranks.
 
-![Distribution of swears by movie and Zipf-Mandelbrot fit](zm_transform.png) ![Same in log scale](zm_log.png)
+![Distribution of swears by movie and Zipf-Mandelbrot fit](zm_transform_by_movie.png) ![Same in log scale](zm_log_by_movie.png)
 
 Distributions for individual movies agree reasonably well with the Zipf-Mandelbrot distribution fit on the overall data, though they tend to fall off slightly faster than predicted.
 
