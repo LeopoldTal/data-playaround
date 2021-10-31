@@ -14,6 +14,10 @@ A few of them appear many times: _fucking_ has a comfortable lead with 207 occur
 
 Conversely, 25 swears are said only once, of which my favourite is _cockblockery_, used in _Kill Bill_.
 
+![Most frequent swears by movie](top_by_movie.png)
+
+Earlier movies have far more swears than later one (discussed in more detail in the original article). N-word prevalence is largely driven by _Django Unchained_ (as expected from the setting and plot), but remains high in other movies.
+
 ## How is swear frequency distributed?
 
 ### Usual word frequency distributions

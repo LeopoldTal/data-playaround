@@ -49,6 +49,8 @@ ggplot(binned_swears, aes(x = 'Swear', y = percentage, fill = factor(rank))) +
 		axis.text.x = element_blank()
 	)
 
+source('./tarantino/by_movie.R', echo = TRUE)
+
 # Distribution (lin scale)
 ggplot(swears, aes(x = rank, y = count, fill = rank)) +
 	geom_col(width = 1) +
